@@ -1,0 +1,38 @@
+header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 80%;
+    margin: 10px auto;
+}
+header h2 a {
+    text-decoration: none;
+    color: blue;
+}
+header h2 a:hover {
+    color: purple;
+}
+.hidden {
+    display: none;
+}
+main{
+    margin: auto;
+    text-align: center;
+    width: 60%;
+}
+main div h1{
+    font-size: 62px;
+}
+main .intro{
+    font-size: 38px;
+}
+main button{
+    font-size: 35px;
+    padding: 10px;
+    background: darkblue;
+    color: white;
+    border-radius: 15px;
+}
+main button:hover{
+    background: darkmagenta;
+}
