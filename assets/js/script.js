@@ -22,10 +22,13 @@ var userIdEl = document.querySelector("#userId");
 // Initialize generic fields for changing alignment
 var mainEl = document.querySelector("main");
 
-// Initialize timer variable and setup timing
+// Initialize container for adding scores
+var scoreListEl = document.querySelector("#score-list");
+
+// Initialize timer variables
 var counter;
 var end;
-var timer = 0;
+var timer;
 
 // Initialize question set and add them to an array.
 var questionNumber = 0;
@@ -99,12 +102,26 @@ function updateTimer()
 // Reset to starting screen
 function resetScreen()
 {
-    // Remove unnecessary elements
-    footerEl.classList.add("hidden");
-    userLabelEl.classList.add("hidden");
-    userIdEl.classList.add("hidden");
-    submitButtonEl.classList.add("hidden");
-    skipButtonEl.classList.add("hidden");
+    // If on submit highscore screen
+    if(backButtonEl.classList.contains("hidden"))
+    {
+        // Remove highscore screen specific elements
+        footerEl.classList.add("hidden");
+        userLabelEl.classList.add("hidden");
+        userIdEl.classList.add("hidden");
+        submitButtonEl.classList.add("hidden");
+        skipButtonEl.classList.add("hidden");
+    }
+    // If on view highscore screen
+    else
+    {
+        // Remove view highscore specific elements
+        backButtonEl.classList.add("hidden");
+        clearButtonEl.classList.add("hidden");
+
+        // Add necessary elements
+        introEl.classList.remove("hidden");
+    }
 
     // Add necessary elements
     highscoreButtonEl.classList.remove("hidden");
@@ -145,6 +162,38 @@ function submitHighscoreScreen(timeLeft)
     // Change styles on page.
     introEl.setAttribute("style", "text-align: left")
     mainEl.setAttribute("style", "text-align: left");
+}
+
+// Change to view highscores
+function viewHighscores()
+{
+    // Remove unnecessary elements for screen
+    // If on intro screen, remove intro specific elements
+    if(submitButtonEl.classList.contains("hidden"))
+    {
+        startButtonEl.classList.add("hidden");
+        highscoreButtonEl.classList.add("hidden");
+    }
+    // if on submit highscore screen, remove submit specific elements
+    else
+    {
+        userLabelEl.classList.add("hidden");
+        userIdEl.classList.add("hidden");
+        submitButtonEl.classList.add("hidden");
+        skipButtonEl.classList.add("hidden");
+    }
+    introEl.classList.add("hidden");
+
+    // Add necessary elements
+    backButtonEl.classList.remove("hidden");
+    clearButtonEl.classList.remove("hidden");
+
+    // Change text content
+    questionEl.textContent = "High Scores";
+
+    // Change styles
+    mainEl.setAttribute("style", "text-align: left");
+    questionEl.setAttribute("style", "text-align: left");
 }
 
 // Function for sending answer choice.
@@ -251,8 +300,10 @@ answer4ButtonEl.addEventListener("click", function()
 {
     sendAnswer("4");
 });
+backButtonEl.addEventListener("click", resetScreen);
+skipButtonEl.addEventListener("click", resetScreen);
 submitButtonEl.addEventListener("click", function()
 {
-    resetScreen;
+    viewHighscores();
 });
-skipButtonEl.addEventListener("click", resetScreen);
+highscoreButtonEl.addEventListener("click", viewHighscores);

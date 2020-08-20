@@ -38,7 +38,7 @@ main .answer{
 main button:hover{
     background: darkmagenta;
 }
-#submit-button, #skip-button{
+#submit-button, #skip-button, #back-button, #clear-button{
     margin: 0px 10px;
 }
 footer{
