@@ -24,6 +24,7 @@ var mainEl = document.querySelector("main");
 
 // Initialize container for adding scores
 var scoreListEl = document.querySelector("#score-list");
+var scores = [];
 
 // Initialize timer variables
 var counter;
@@ -84,14 +85,45 @@ questionSet.push(question3);
 questionSet.push(question4);
 questionSet.push(question5);
 
+// Initialize highscores from local storage
+initializeHighscores();
+
+// Initialize highscores from local storage
+function initializeHighscores()
+{
+    // Load scores from saved data
+    var localScores = localStorage.getItem("scores");
+    
+    // If no local scores, set empty list and exit
+    if(!localScores)
+    {
+        scores = [];
+        return false;
+    }
+
+    // Parse scores list
+    scores = JSON.parse(localScores);
+
+    // Make highscore chart
+    for(var i = 0; i < scores.length; i++)
+    {
+        var listEl = document.createElement("li");
+        listEl.className = "score-item";
+        listEl.textContent = (i+1) + ". " + scores[i].name + " - " + scores[i].score;
+        scoreListEl.appendChild(listEl);
+    }
+}
+
 // Update timer and variables.
 function updateTimer()
 {
+    // If time is over, end repeating counter and move to submit screen
     if(Date.now() > end)
     {
         clearInterval(counter);
         submitHighscoreScreen(0);
     }
+    // If time is left, update timer 
     else
     {
         timer = Math.floor((end - Date.now())/1000);
@@ -116,6 +148,7 @@ function resetScreen()
     else
     {
         // Remove view highscore specific elements
+        scoreListEl.classList.add("hidden");
         backButtonEl.classList.add("hidden");
         clearButtonEl.classList.add("hidden");
 
@@ -181,10 +214,12 @@ function viewHighscores()
         userIdEl.classList.add("hidden");
         submitButtonEl.classList.add("hidden");
         skipButtonEl.classList.add("hidden");
+        footerEl.classList.add("hidden");
     }
     introEl.classList.add("hidden");
 
     // Add necessary elements
+    scoreListEl.classList.remove("hidden");
     backButtonEl.classList.remove("hidden");
     clearButtonEl.classList.remove("hidden");
 
@@ -209,11 +244,8 @@ function sendAnswer(choice)
     else
     {
         footerEl.textContent = "Wrong!";
-        // Used to prevent a potential bug where last 10 score gets counted off twice.
-        if(questionNumber < questionSet.length)
-        {
-            end -= 10000;
-        }
+        end -= 10000;
+        updateTimer();
     }
 
     // Make footer visible if currently hidden
@@ -228,17 +260,9 @@ function sendAnswer(choice)
     // If no more questions are available
     if(questionNumber >= questionSet.length)
     {
-        if(choice === correct)
-        {
-            // Move to submit highscore screen
-            submitHighscoreScreen(timer);
-        }
-        // Used to fix a bug, since timer would not update fast enough to subtract 10 points.
-        else
-        {
-            // Move to submit highscore screen with 10 less score
-            submitHighscoreScreen(timer - 10);
-        }
+        // Move to submit highscore screen
+        clearInterval(counter);
+        submitHighscoreScreen(timer);
     }
     // if more questions are available
     else
@@ -252,7 +276,8 @@ function sendAnswer(choice)
     }
 }
 
-// Event listeners
+// Event listeners for button on intro screen
+highscoreButtonEl.addEventListener("click", viewHighscores);
 startButtonEl.addEventListener("click", function()
 {
     // Initialize question number for new sets.
@@ -284,6 +309,8 @@ startButtonEl.addEventListener("click", function()
     end = Date.now() + 75000;
     counter = setInterval(updateTimer, 100);
 });
+
+// Event listeners for answer buttons
 answer1ButtonEl.addEventListener("click", function()
 {
     sendAnswer("1");
@@ -300,10 +327,52 @@ answer4ButtonEl.addEventListener("click", function()
 {
     sendAnswer("4");
 });
-backButtonEl.addEventListener("click", resetScreen);
+
+// Event listeners for button on submit screen
 skipButtonEl.addEventListener("click", resetScreen);
 submitButtonEl.addEventListener("click", function()
 {
+    // Create new score object
+    var highscore =
+    {
+        name: userIdEl.value,
+        score: timer
+    }
+
+    // Add to the scores list
+    var scoreLength = scores.length;
+    for(var i = 0; i < scoreLength; i++)
+    {
+        if(scores[i].score < highscore.score)
+        {
+            scores.splice(i, 0, highscore);
+            break;
+        }
+    }
+    if(scoreLength === scores.length)
+    {
+        scores.push(highscore);
+    }
+    localStorage.setItem("scores", JSON.stringify(scores));
+
+    // Remake highscore list
+    scoreListEl.innerHTML = "";
+    for(var i = 0; i < scores.length; i++)
+    {
+        var listEl = document.createElement("li");
+        listEl.className = "score-item";
+        listEl.textContent = (i+1) + ". " + scores[i].name + " - " + scores[i].score;
+        scoreListEl.appendChild(listEl);
+    }
+
     viewHighscores();
 });
-highscoreButtonEl.addEventListener("click", viewHighscores);
+
+// Event listeners for buttons on highscore screen
+backButtonEl.addEventListener("click", resetScreen);
+clearButtonEl.addEventListener("click", function()
+{
+    scoreListEl.innerHTML = "";
+    scores = [];
+    localStorage.setItem("scores", JSON.stringify(scores));
+});
