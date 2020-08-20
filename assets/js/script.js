@@ -6,6 +6,7 @@ var answer2ButtonEl = document.querySelector("#answer2-button");
 var answer3ButtonEl = document.querySelector("#answer3-button");
 var answer4ButtonEl = document.querySelector("#answer4-button");
 var submitButtonEl = document.querySelector("#submit-button");
+var skipButtonEl = document.querySelector("#skip-button");
 var backButtonEl = document.querySelector("#back-button");
 var clearButtonEl = document.querySelector("#clear-button");
 
@@ -15,8 +16,15 @@ var introEl = document.querySelector(".intro");
 var timerEl = document.querySelector(".timer");
 var timerTimeEl = document.querySelector("#timer");
 var footerEl = document.querySelector("#footer");
+var userLabelEl = document.querySelector("#userId-label");
+var userIdEl = document.querySelector("#userId");
+
+// Initialize generic fields for changing alignment
+var mainEl = document.querySelector("main");
 
 // Initialize timer variable and setup timing
+var counter;
+var end;
 var timer = 0;
 
 // Initialize question set and add them to an array.
@@ -73,6 +81,46 @@ questionSet.push(question3);
 questionSet.push(question4);
 questionSet.push(question5);
 
+// Update timer and variables.
+function updateTimer()
+{
+    if(Date.now() > end)
+    {
+        clearInterval(counter);
+        submitHighscoreScreen(0);
+    }
+    else
+    {
+        timer = Math.floor((end - Date.now())/1000);
+        timerTimeEl.textContent = timer;
+    }
+}
+
+// Reset to starting screen
+function resetScreen()
+{
+    // Remove unnecessary elements
+    footerEl.classList.add("hidden");
+    userLabelEl.classList.add("hidden");
+    userIdEl.classList.add("hidden");
+    submitButtonEl.classList.add("hidden");
+    skipButtonEl.classList.add("hidden");
+
+    // Add necessary elements
+    highscoreButtonEl.classList.remove("hidden");
+    startButtonEl.classList.remove("hidden");
+
+    // Change textcontent to intro
+    timerTimeEl.textContent = "75";
+    questionEl.textContent = "Coding Quiz Challenge";
+    introEl.textContent = "Try to answer the following code-related questions within the time limit. Keep in mind that incorrect answers will penalize your score/time by ten seconds!";
+    
+    // Change styles on page
+    questionEl.setAttribute("style", "text-align: center");
+    introEl.setAttribute("style", "text-align: center");
+    mainEl.setAttribute("style", "text-align: center");
+}
+
 // Move to submit highscore screen with current time remaining
 function submitHighscoreScreen(timeLeft)
 {
@@ -84,14 +132,27 @@ function submitHighscoreScreen(timeLeft)
     timerEl.classList.add("hidden");
 
     // Add necessary elements for screen
-    questionEl.textContent = "All done!"
+    introEl.classList.remove("hidden");
+    userLabelEl.classList.remove("hidden");
+    userIdEl.classList.remove("hidden");
+    submitButtonEl.classList.remove("hidden");
+    skipButtonEl.classList.remove("hidden");
+
+    // Change textContent on page.
+    questionEl.textContent = "All done!";
+    introEl.textContent = "Your final score is " + timeLeft + ".";
+    
+    // Change styles on page.
+    introEl.setAttribute("style", "text-align: left")
+    mainEl.setAttribute("style", "text-align: left");
 }
 
 // Function for sending answer choice.
 function sendAnswer(choice)
 {
+    var correct = questionSet[questionNumber].correctAnswer;
     // If answer is correct, add proper footer.
-    if(choice === questionSet[questionNumber].correctAnswer)
+    if(choice === correct)
     {
         footerEl.textContent = "Correct!";       
     }
@@ -99,7 +160,11 @@ function sendAnswer(choice)
     else
     {
         footerEl.textContent = "Wrong!";
-        timer -=10;
+        // Used to prevent a potential bug where last 10 score gets counted off twice.
+        if(questionNumber < questionSet.length)
+        {
+            end -= 10000;
+        }
     }
 
     // Make footer visible if currently hidden
@@ -114,8 +179,17 @@ function sendAnswer(choice)
     // If no more questions are available
     if(questionNumber >= questionSet.length)
     {
-        // Move to submit highscore screen
-        submitHighscoreScreen(timer);
+        if(choice === correct)
+        {
+            // Move to submit highscore screen
+            submitHighscoreScreen(timer);
+        }
+        // Used to fix a bug, since timer would not update fast enough to subtract 10 points.
+        else
+        {
+            // Move to submit highscore screen with 10 less score
+            submitHighscoreScreen(timer - 10);
+        }
     }
     // if more questions are available
     else
@@ -135,7 +209,7 @@ startButtonEl.addEventListener("click", function()
     // Initialize question number for new sets.
     questionNumber = 0;
 
-    // Remove elements unnecessary for quiz.
+    // Remove elements unnecessary for quiz
     introEl.classList.add("hidden");
     highscoreButtonEl.classList.add("hidden");
     startButtonEl.classList.add("hidden");
@@ -147,15 +221,19 @@ startButtonEl.addEventListener("click", function()
     answer3ButtonEl.classList.remove("hidden");
     answer4ButtonEl.classList.remove("hidden");
 
-    // Change textfields.
+    // Change textfields
     questionEl.textContent = questionSet[questionNumber].question;
     answer1ButtonEl.textContent = questionSet[questionNumber].answer1;
     answer2ButtonEl.textContent = questionSet[questionNumber].answer2;
     answer3ButtonEl.textContent = questionSet[questionNumber].answer3;
     answer4ButtonEl.textContent = questionSet[questionNumber].answer4;
     
-    // Change styling.
+    // Change styling
     questionEl.setAttribute("style", "text-align: left");
+
+    // Start timer
+    end = Date.now() + 75000;
+    counter = setInterval(updateTimer, 100);
 });
 answer1ButtonEl.addEventListener("click", function()
 {
@@ -173,3 +251,8 @@ answer4ButtonEl.addEventListener("click", function()
 {
     sendAnswer("4");
 });
+submitButtonEl.addEventListener("click", function()
+{
+    resetScreen;
+});
+skipButtonEl.addEventListener("click", resetScreen);

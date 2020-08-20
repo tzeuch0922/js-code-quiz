@@ -9,17 +9,20 @@
 <body>
     <header>
         <h2><a href="#" id="hs-button">View high scores</a></h2>
-        <h2 class="hidden timer">Time: <span id="timer">0</span></h2>
+        <h2 class="hidden timer">Time: <span id="timer">75</span></h2>
     </header>
     <main>
         <div class="question"><h1>Coding Quiz Challenge</h1></div>
         <p class="intro">Try to answer the following code-related questions within the time limit. Keep in mind that incorrect answers will penalize your score/time by ten seconds!</p>
+        <label class="hidden intro" id="userId-label" for="userId">Enter Initials: </label>
+        <input class="hidden intro" type="text" name="userId" id="userId">
         <button id="start-button">Start Quiz</button>
         <button class="answer hidden" id="answer1-button"></button>
         <button class="answer hidden" id="answer2-button"></button>
         <button class="answer hidden" id="answer3-button"></button>
         <button class="answer hidden" id="answer4-button"></button>
         <button class="hidden" id="submit-button">Submit</button>
+        <button class="hidden" id="skip-button">Skip</button>
         <button class="hidden" id="back-button">Go back</button>
         <button class="hidden" id="clear-button">Clear high scores</button>
     </main>

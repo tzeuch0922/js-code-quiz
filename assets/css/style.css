@@ -38,6 +38,9 @@ main .answer{
 main button:hover{
     background: darkmagenta;
 }
+#submit-button, #skip-button{
+    margin: 0px 10px;
+}
 footer{
     width: 60%;
     text-align: left;
