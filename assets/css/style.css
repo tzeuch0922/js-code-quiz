@@ -18,7 +18,7 @@ header h2 a:hover {
 main{
     margin: auto;
     text-align: center;
-    width: 60%;
+    width: 80%;
 }
 main div h1{
     font-size: 62px;
@@ -58,7 +58,7 @@ main .answer{
 
 /* Footer Styles */
 footer{
-    width: 60%;
+    width: 80%;
     text-align: left;
     margin: 10px auto;
 }
