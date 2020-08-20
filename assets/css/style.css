@@ -12,9 +12,6 @@ header h2 a {
 header h2 a:hover {
     color: purple;
 }
-.hidden {
-    display: none;
-}
 main{
     margin: auto;
     text-align: center;
@@ -33,6 +30,28 @@ main button{
     color: white;
     border-radius: 15px;
 }
+main .answer{
+    display: block;
+    text-align: left;
+    width: 35%;
+}
 main button:hover{
     background: darkmagenta;
+}
+footer{
+    width: 60%;
+    text-align: left;
+    margin: 10px auto;
+}
+footer p{
+    border-top: lightgray solid 1px;
+    margin-top: 5px;
+    font-size: 35px;
+    color: gray;
+}
+.hidden{
+    display: none;
+}
+main .hidden {
+    display: none;
 }
