@@ -12,10 +12,10 @@ For example:
 * Removed timer on any pages that didn't have a question on it, as it would be useless on those pages.
 
 ## Site Images
-!["Intro Page"](./assets/images/Intro-Capture.png)
-!["Question Page"](./assets/images/Question-Capture.png)
-!["Submit Page"](./assets/images/Submit-Capture.png)
-!["Highscore Page"](./assets/images/Highscore-Capture.png)
+!["Intro Page"](./assets/images/Intro-Capture.PNG)
+!["Question Page"](./assets/images/Question-Capture.PNG)
+!["Submit Page"](./assets/images/Submit-Capture.PNG)
+!["Highscore Page"](./assets/images/Highscore-Capture.PNG)
 
 ## Webpage Link
 https://tzeuch0922.github.io/js-code-quiz/
